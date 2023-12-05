@@ -20,7 +20,7 @@ const Search = () => {
     setLoading(true);
 
     try {
-      const response = await axios.get(`http://localhost:3001/search?q=${searchTerm}`);
+      const response = await axios.get(`https://nzbray-data.onrender.com/search?q=${searchTerm}`);
       
       // Navigate to the search results page with the query parameter
       navigate(`/search?q=${searchTerm}`);

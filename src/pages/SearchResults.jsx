@@ -13,7 +13,7 @@ function SearchResults() {
   useEffect(() => {
     const fetchSearchResults = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/search?q=${query}&page=${currentPage}`);
+        const response = await axios.get(`https://nzbray-data.onrender.com/search?q=${query}&page=${currentPage}`);
         setSearchResults(response.data);
       } catch (error) {
         console.error('Error fetching search results:', error);
@@ -41,7 +41,7 @@ function SearchResults() {
 
   const handleDownload = (nzbId) => {
     // Implement your download logic here
-    window.open(`http://localhost:3001/nzb/${nzbId}`, '_blank');
+    window.open(`https://nzbray-data.onrender.com/nzb/${nzbId}`, '_blank');
     console.log(`Downloading NZB with ID: ${nzbId}`);
   };
 

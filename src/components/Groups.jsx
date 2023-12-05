@@ -19,7 +19,7 @@ function Groups() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/groups/search?q=${searchTerm}`);
+      const response = await fetch(`https://nzbray-data.onrender.com/groups/search?q=${searchTerm}`);
       const data = await response.json();
       setGroups(data);
     } catch (error) {
@@ -32,7 +32,7 @@ function Groups() {
   const handleBrowseAllGroups = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:3001/groups/all?page=${currentPage}`);
+      const response = await fetch(`https://nzbray-data.onrender.com/groups/all?page=${currentPage}`);
       const data = await response.json();
       setGroups(data);
     } catch (error) {
@@ -45,7 +45,7 @@ function Groups() {
   const handleBrowsePopularGroups = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:3001/groups/popular?page=${currentPage}`);
+      const response = await fetch(`https://nzbray-data.onrender.com/groups/popular?page=${currentPage}`);
       const data = await response.json();
       setGroups(data);
     } catch (error) {
@@ -67,7 +67,7 @@ function Groups() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://localhost:3001/groups/all?page=${currentPage}`);
+        const response = await fetch(`https://nzbray-data.onrender.com/groups/all?page=${currentPage}`);
         const data = await response.json();
         setGroups(data);
       } catch (error) {
