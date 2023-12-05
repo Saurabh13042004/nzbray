@@ -47,7 +47,7 @@ function SearchResults() {
 
   return (
     <div className="p-4 lg:p-12">
-      <Link to="/" className="text-xl text-blue-500 mb-4 block">
+      <Link to="/home" className="text-xl text-blue-500 mb-4 block">
         Back to Home
       </Link>
       <h1 className="text-3xl font-semibold mb-4">Search Results for "{query}"</h1>
