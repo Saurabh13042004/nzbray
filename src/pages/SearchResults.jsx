@@ -65,7 +65,11 @@ function SearchResults() {
           {searchResults.map((result, index) => (
             <div key={index} className="my-4 bg-base-100 shadow-xl p-4 relative">
               <div className="card-body">
-                <h2 className="card-title text-lg font-semibold">{result.title}</h2>
+                <h2 className="card-title text-lg font-semibold">{result.title
+    .replace('yEnc', '')
+    .replace('NZB', '')
+    .replace('⬇', '')
+    .replace('NFO', '\n')}</h2>
                 <p><span className='font-semibold'>Group Name : </span>{result.grp}</p>
                 <p><span className='font-semibold'>Poster : </span>{result.poster}</p>
                 <p><span className='font-semibold'>NZBId : </span>{result.nzbId}</p>
