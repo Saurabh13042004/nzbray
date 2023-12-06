@@ -59,8 +59,10 @@ function SearchResults() {
 
   return (
     <div className="p-4 lg:p-12">
+
       <Link to="/home" className="text-xl text-blue-500 mb-4 block flex items-center">
         <FaHome className="mr-2" />
+
         Back to Home
       </Link>
       <h1 className="text-3xl font-semibold mb-4">Search Results for "{query}"</h1>
@@ -86,10 +88,14 @@ function SearchResults() {
               className="my-4 bg-base-100 shadow-xl p-4 relative hover:bg-blue-100 transition-all duration-300"
             >
               <div className="card-body">
-                <h2 className="card-title text-lg font-semibold">{result.title.replace(/(yEnc NZB⬇|-\s?[\d/]+)\s?-\s?/, '')}</h2>
-                <p><span className='font-semibold'>Group Name: </span>{result.grp}</p>
-                <p><span className='font-semibold'>Poster: </span>{result.poster}</p>
-                <p><span className='font-semibold'>NZBId: </span>{result.nzbId}</p>
+                <h2 className="card-title text-lg font-semibold">{result.title
+    .replace('yEnc', '')
+    .replace('NZB', '')
+    .replace('⬇', '')
+    .replace('NFO', '\n')}</h2>
+                <p><span className='font-semibold'>Group Name : </span>{result.grp}</p>
+                <p><span className='font-semibold'>Poster : </span>{result.poster}</p>
+                <p><span className='font-semibold'>NZBId : </span>{result.nzbId}</p>
               </div>
 
               {/* Circular download icon */}
