@@ -79,7 +79,7 @@ function SignUp() {
             />
           </div>
 
-          <div>
+          <div className="flex items-center justify-center">
             {loading ? (
               <span className="loading loading-ring loading-lg"></span>
             ) : (

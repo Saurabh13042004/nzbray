@@ -67,7 +67,7 @@ function Groups() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`https://nzbray-data.onrender.com/groups/all?page=${currentPage}`);
+        const response = await fetch(`https://nzbray-data.onrender.com/groups/`);
         const data = await response.json();
         setGroups(data);
       } catch (error) {
@@ -138,6 +138,7 @@ function Groups() {
               <tr>
                 <th className="text-left">S.No.</th>
                 <th className="text-left">Group name</th>
+                <th className='text-left'>Size</th>
                 <th className="text-left">Last Post Date</th>
                 <th className="text-left">Last Scan Date</th>
               </tr>
@@ -147,6 +148,7 @@ function Groups() {
                 <tr key={group.name}>
                   <td className="text-left">{index + 1 + currentPage * 10}</td>
                   <td className="text-left">{group.name}</td>
+                  <td className="text-left">{group.activity_per_week }</td>
                   <td className="text-left">{group.last_update}</td>
                   <td className="text-left">{group.last_scan_date}</td>
                 </tr>
