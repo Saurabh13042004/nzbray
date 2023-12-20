@@ -1,3 +1,5 @@
+// searchresults.jsx
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, Link } from 'react-router-dom';
@@ -9,7 +11,13 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function SearchResults() {
   const location = useLocation();
-  const query = new URLSearchParams(location.search).get('q');
+  const searchParams = new URLSearchParams(location.search);
+  const query = searchParams.get('q');
+  const ft = searchParams.get('ft');
+  const gr = searchParams.get('gr');
+  const po = searchParams.get('po');
+  const so = searchParams.get('so');
+
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,7 +25,7 @@ function SearchResults() {
   useEffect(() => {
     const fetchSearchResults = async () => {
       try {
-        const response = await axios.get(`https://nzbray-data.onrender.com/search?q=${query}&page=${currentPage}`);
+        const response = await axios.get(`https://nzbray-data.onrender.com/search?q=${query}&page=${currentPage}&ft=${ft}&gr=${gr}&po=${po}&so=${so}`);
         setSearchResults(response.data);
       } catch (error) {
         console.error('Error fetching search results:', error);
@@ -27,7 +35,7 @@ function SearchResults() {
     };
 
     fetchSearchResults();
-  }, [query, currentPage]);
+  }, [query, currentPage, ft, gr, po, so]);
 
   const handleNextPage = () => {
     setCurrentPage((prevPage) => {
@@ -59,12 +67,11 @@ function SearchResults() {
 
   return (
     <div className="p-4 lg:p-12">
-
       <Link to="/home" className="text-xl text-blue-500 mb-4 block flex items-center">
         <FaHome className="mr-2" />
-
         Back to Home
       </Link>
+
       <h1 className="text-3xl font-semibold mb-4">Search Results for "{query}"</h1>
 
       {loading && (
@@ -85,14 +92,16 @@ function SearchResults() {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="my-4 bg-base-100 shadow-xl p-4 relative hover:bg-blue-100 transition-all duration-300"
+              className="my-4 w-[80%] mx-auto bg-base-100 shadow-xl p-4 relative  transition-all duration-300"
             >
               <div className="card-body">
-                <h2 className="card-title text-lg font-semibold">{result.title
-    .replace('yEnc', '')
-    .replace('NZB', '')
-    .replace('⬇', '')
-    .replace('NFO', '\n')}</h2>
+                <Link 
+                  to={`/post-details/${result.nzbId}`}
+                 className="card-title text-lg font-semibold">{result.title
+                  .replace('yEnc', '')
+                  .replace('NZB', '')
+                  .replace('⬇', '')
+                  .replace('NFO', '\n')}</Link>
                 <p><span className='font-semibold'>Group Name : </span>{result.grp}</p>
                 <p><span className='font-semibold'>Poster : </span>{result.poster}</p>
                 <p><span className='font-semibold'>NZBId : </span>{result.nzbId}</p>
@@ -104,7 +113,7 @@ function SearchResults() {
                   className="btn btn-primary rounded-full hover:shadow-md transition-all duration-300"
                   onClick={() => handleDownload(result.nzbId)}
                 >
-                  <FaDownload size={18}/>
+                  <FaDownload size={18}/> Download
                 </button>
               </div>
             </motion.div>

@@ -16,6 +16,7 @@
     "framer-motion": "^10.16.14",
     "nntp": "^0.3.1",
     "node-nntp": "^0.6.1",
+    "preline": "^2.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.12.0",

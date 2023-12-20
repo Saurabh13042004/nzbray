@@ -147,7 +147,11 @@ function Groups() {
               {groups.map((group, index) => (
                 <tr key={group.name}>
                   <td className="text-left">{index + 1 + currentPage * 10}</td>
-                  <td className="text-left">{group.name}</td>
+                  <td className="text-left">
+                    <Link to={`/group/${group.name}`} className="link">
+                      {group.name}
+                    </Link>
+                  </td>
                   <td className="text-left">{group.activity_per_week }</td>
                   <td className="text-left">{group.last_update}</td>
                   <td className="text-left">{group.last_scan_date}</td>

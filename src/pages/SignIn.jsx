@@ -41,10 +41,10 @@ function SignIn() {
 
   return (
     <div className="flex min-h-screen items-center justify-center ">
-      <div className="w-full max-w-md p-8 rounded-md shadow-md bg-white">
+      <div className="w-full max-w-md p-8 rounded-md shadow-md bg-base">
         <IoEnterSharp  className="mx-auto h-10 w-auto" />
 
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-base-900">
           Sign In to continue
         </h2>
 
@@ -62,7 +62,7 @@ function SignIn() {
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
               required
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-base-300 placeholder-base-500 text-base-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
               placeholder="Email address"
             />
           </div>
@@ -77,7 +77,7 @@ function SignIn() {
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
               required
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-base-300 placeholder-base-500 text-base-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
               placeholder="Password"
             />
           </div>
