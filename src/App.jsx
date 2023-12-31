@@ -13,16 +13,19 @@ import GroupResults from './pages/GroupResults'
 import Admin from './pages/Admin'
 import PostDetails from './pages/PostDetails'
 import GroupDetails from './pages/GroupDetails'
+import Entry from './pages/Entry'
+import Location from './components/Location'
 function App() {
 
   return (
     <div style={{ paddingTop: '60px' }}>
     <Router>
-     <Navbar/>
+     <Location/>
 
      <Routes>
 
       <Route path='/' element={<SignUp/>}/>
+      <Route path='/trail' element={<Entry/>}/>
       <Route path='/groups' element={<Groups/>}/>
         <Route path='/about' element={<About/>}/>
         <Route path='/disclaimer' element={<Disclaimer/>}/>

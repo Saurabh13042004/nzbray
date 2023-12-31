@@ -18,7 +18,7 @@ const convertBytesToSize = (bytes) => {
 const handleDownload = (nzbId) => {
     try {
       const link = document.createElement('a');
-      link.href = `https://nzbray-data.onrender.com/nzb/${nzbId}`;
+      link.href = `http://localhost:3001/nzb/${nzbId}`;
       link.download = `${nzbId}.nzb`;
       document.body.appendChild(link);
       link.click();
@@ -37,7 +37,7 @@ const GroupDetails = () => {
   useEffect(() => {
     const fetchGroupDetails = async () => {
       try {
-        const response = await axios.get(`https://nzbray-data.onrender.com/group/${groupName}`);
+        const response = await axios.get(`http://localhost:3001/group/${groupName}`);
         setGroupDetails(response.data);
       } catch (error) {
         console.error('Error fetching group details:', error);

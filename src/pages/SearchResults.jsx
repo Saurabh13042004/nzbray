@@ -25,7 +25,7 @@ function SearchResults() {
   useEffect(() => {
     const fetchSearchResults = async () => {
       try {
-        const response = await axios.get(`https://nzbray-data.onrender.com/search?q=${query}&page=${currentPage}&ft=${ft}&gr=${gr}&po=${po}&so=${so}`);
+        const response = await axios.get(`http://localhost:3001/search?q=${query}&page=${currentPage}&ft=${ft}&gr=${gr}&po=${po}&so=${so}`);
         setSearchResults(response.data);
       } catch (error) {
         console.error('Error fetching search results:', error);
@@ -54,7 +54,7 @@ function SearchResults() {
   const handleDownload = (nzbId) => {
     try {
       const link = document.createElement('a');
-      link.href = `https://nzbray-data.onrender.com/nzb/${nzbId}`;
+      link.href = `http://localhost:3001/nzb/${nzbId}`;
       link.download = `${nzbId}.nzb`;
       document.body.appendChild(link);
       link.click();

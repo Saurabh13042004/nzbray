@@ -18,6 +18,21 @@ const Search = () => {
   const [sortOrder, setSortOrder] = useState('Date');
 
   const navigate = useNavigate();
+  const [groups, setGroups] = useState([]);
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/groups');
+        setGroups(response.data);
+      } catch (error) {
+        console.error('Error fetching groups:', error);
+        toast.error('Error fetching groups. Please try again.');
+      }
+    };
+
+    fetchGroups();
+  }, []);
 
   useEffect(() => {
     const auth = getAuth();
@@ -33,7 +48,7 @@ const Search = () => {
     setLoading(true);
 
     try {
-      const response = await axios.get(`https://nzbray-data.onrender.com/search?q=${searchTerm}&ft=${filetypes}&gr=${group}&po=${poster}&so=${sortOrder}`);
+      const response = await axios.get(`http://localhost:3001/search?q=${searchTerm}&ft=${filetypes}&gr=${group}&po=${poster}&so=${sortOrder}`);
 
       // Navigate to the search results page with the query parameter
       navigate(`/search?q=${searchTerm}&ft=${filetypes}&gr=${group}&po=${poster}&so=${sortOrder}`);
@@ -102,89 +117,42 @@ const Search = () => {
                 <label htmlFor="filetypes" className="block text-gray-700 text-sm font-bold mb-2 mr-2">
                   Filetypes:
                 </label>
-                <div className="flex gap-5">
-                  <label className="radio-label">
-                    <input
-                      type="radio"
-                      id="all"
-                      name="filetypes"
-                      className="radio"
-                      checked={filetypes === ''}
-                      onChange={() => setFiletypes('')}
-                    />
-                    All
-                  </label>
-                  <label className="radio-label">
-                    <input
-                      type="radio"
-                      id="audio"
-                      name="filetypes"
-                      className="radio"
-                      checked={filetypes === 'au'}
-                      onChange={() => setFiletypes('au')}
-                    />
-                    Audio
-                  </label>
-                  <label className="radio-label">
-                    <input
-                      type="radio"
-                      id="video"
-                      name="filetypes"
-                      className="radio"
-                      checked={filetypes === 'vi'}
-                      onChange={() => setFiletypes('vi')}
-                    />
-                    Video
-                  </label>
-                  <label className="radio-label">
-                    <input
-                      type="radio"
-                      id="image"
-                      name="filetypes"
-                      className="radio"
-                      checked={filetypes === 'im'}
-                      onChange={() => setFiletypes('im')}
-                    />
-                    Image
-                  </label>
-                  <label className="radio-label">
-                    <input
-                      type="radio"
-                      id="app"
-                      name="filetypes"
-                      className="radio"
-                      checked={filetypes === 'ap'}
-                      onChange={() => setFiletypes('ap')}
-                    />
-                    App
-                  </label>
-                  <label className="radio-label">
-                    <input
-                      type="radio"
-                      id="other"
-                      name="filetypes"
-                      className="radio"
-                      checked={filetypes === 'Other'}
-                      onChange={() => setFiletypes('Other')}
-                    />
-                    Other
-                  </label>
-                </div>
+                <div className="flex items-center">
+        <select
+          id="filetypes"
+          name="filetypes"
+          className="input w-full max-w-xs"
+          value={filetypes}
+          onChange={(e) => setFiletypes(e.target.value)}
+        >
+          <option value="">All</option>
+          <option value="au">Audio</option>
+          <option value="vi">Video</option>
+          <option value="im">Image</option>
+          <option value="ap">App</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
               </div>
-
-              <div className="flex items-center mb-4">
-                <label htmlFor="group" className="block text-gray-700 text-sm font-bold mb-2 mr-2">
-                  Group:
-                </label>
-                <input
-                  id="group"
-                  type="text"
-                  placeholder="All"
-                  className="input w-full max-w-xs"
-                  value={group}
-                  onChange={(e) => setGroup(e.target.value)}
-                />
-              </div>
+<div className="flex items-center mb-4">
+            <label htmlFor="group" className="block text-gray-700 text-sm font-bold mb-2 mr-2">
+              Group:
+            </label>
+            <select
+              id="group"
+              name="group"
+              className="input w-full max-w-xs"
+              value={group}
+              onChange={(e) => setGroup(e.target.value)}
+            >
+              <option value="">All</option>
+              {groups.map((group) => (
+                <option key={group.name} value={group.name}>
+                  {group.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
               <div className="flex items-center mb-4">
                 <label htmlFor="poster" className="block text-gray-700 text-sm font-bold mb-2 mr-2">

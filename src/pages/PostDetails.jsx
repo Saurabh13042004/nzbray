@@ -21,7 +21,7 @@ const PostDetails = () => {
   useEffect(() => {
     const fetchPostDetails = async () => {
       try {
-        const response = await axios.get(`https://nzbray-data.onrender.com/post-details/${postId}`);
+        const response = await axios.get(`http://localhost:3001/post-details/${postId}`);
         setPostDetails(response.data);
       } catch (error) {
         console.error('Error fetching post details:', error);
