@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
-import {  signInWithEmailAndPassword } from 'firebase/auth';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { IoEnterSharp } from "react-icons/io5";
-
+import Cookies from 'js-cookie';
+import { IoEnterSharp } from 'react-icons/io5';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../firebase';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 function SignIn() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [accessCode, setAccessCode] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -18,67 +18,72 @@ function SignIn() {
     e.preventDefault();
     setLoading(true);
 
-    signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
+    try {
+      // Validate the access code
+      const isValidAccessCode = await validateAccessCode();
 
-        const user = userCredential.user;
-        if(user){
-            navigate('/home');
-        }
-        setLoading(false);
-        // ...
-        })
+      if (isValidAccessCode) {
+        // Get email from cookies
+        const email = Cookies.get('email');
+        const authInstance = getAuth();
 
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.error(errorCode, errorMessage);
+        // Sign in with email and access code as password
+        await signInWithEmailAndPassword(authInstance, email, accessCode);
+
         setLoading(false);
-        // Display toast notification for the error
-        toast.error(errorMessage);
-      });
+        toast.success('Welcome back to IndexArr!');
+        navigate('/home');
+      } else {
+        setLoading(false);
+        toast.error('Invalid access code or email');
+      }
+    } catch (error) {
+      const errorMessage = error.message;
+      console.error(errorMessage);
+      setLoading(false);
+      toast.error(errorMessage);
+    }
+  };
+
+  const validateAccessCode = async () => {
+    try {
+      // Query the 'users' collection for the provided access code and email
+      const usersCollection = collection(db, 'users');
+      const q = query(usersCollection, where('accessCode', '==', accessCode));
+
+      const querySnapshot = await getDocs(q);
+
+      // Check if the user with the provided access code exists and is associated with the email
+      return !querySnapshot.empty;
+    } catch (error) {
+      throw new Error('Error validating access code');
+    }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center ">
+    <div className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-md p-8 rounded-md shadow-md bg-base">
-        <IoEnterSharp  className="mx-auto h-10 w-auto" />
+        <IoEnterSharp className="mx-auto h-10 w-auto" />
 
         <h2 className="mt-6 text-center text-3xl font-extrabold text-base-900">
           Sign In to continue
         </h2>
 
-        {/* Sign-up form */}
+        {/* Sign-in form */}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {/* ... (Sign-up form fields) ... */}
           <div>
-            <label htmlFor="email-address" className="sr-only">
-              Email address
+            <label htmlFor="access-code" className="sr-only">
+              Access Code
             </label>
             <input
-              id="email-address"
-              name="email"
-              type="email"
-              onChange={(e) => setEmail(e.target.value)}
-              autoComplete="email"
+              id="access-code"
+              name="accessCode"
+              type="text"
+              onChange={(e) => setAccessCode(e.target.value)}
+              autoComplete="off"
               required
               className="appearance-none rounded-md relative block w-full px-3 py-2 border border-base-300 placeholder-base-500 text-base-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="Email address"
-            />
-          </div>
-          <div>
-            <label htmlFor="password" className="sr-only">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-              required
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-base-300 placeholder-base-500 text-base-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="Password"
+              placeholder="Access Code"
             />
           </div>
 
@@ -98,7 +103,7 @@ function SignIn() {
 
         <div className="mt-6">
           <p className="text-center text-sm text-gray-600">
-             Don't have an account  ?   {' '}
+            Don't have an account? {' '}
             <Link to="/" className="font-medium text-indigo-600 hover:text-indigo-500">
               Sign up
             </Link>

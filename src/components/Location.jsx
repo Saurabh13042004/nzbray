@@ -5,7 +5,7 @@ function Location() {
   const location = useLocation();
 
   // Don't render the Navbar if the current path is '/signin'
-  if (location.pathname === '/trail') {
+  if (location.pathname === '/trail' || location.pathname === '/admin') {
     return null;
   }
 

@@ -25,7 +25,7 @@ function SearchResults() {
   useEffect(() => {
     const fetchSearchResults = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/search?q=${query}&page=${currentPage}&ft=${ft}&gr=${gr}&po=${po}&so=${so}`);
+        const response = await axios.get(`https://nzbray-data.onrender.com/search?q=${query}&page=${currentPage}&ft=${ft}&gr=${gr}&po=${po}&so=${so}`);
         setSearchResults(response.data);
       } catch (error) {
         console.error('Error fetching search results:', error);
@@ -54,7 +54,7 @@ function SearchResults() {
   const handleDownload = (nzbId) => {
     try {
       const link = document.createElement('a');
-      link.href = `http://localhost:3001/nzb/${nzbId}`;
+      link.href = `https://nzbray-data.onrender.com/nzb/${nzbId}`;
       link.download = `${nzbId}.nzb`;
       document.body.appendChild(link);
       link.click();
@@ -95,13 +95,13 @@ function SearchResults() {
               className="my-4 w-[80%] mx-auto bg-base-100 shadow-xl p-4 relative  transition-all duration-300"
             >
               <div className="card-body">
-                <Link 
+                <Link
                   to={`/post-details/${result.nzbId}`}
-                 className="card-title text-lg font-semibold">{result.title
-                  .replace('yEnc', '')
-                  .replace('NZB', '')
-                  .replace('⬇', '')
-                  .replace('NFO', '\n')}</Link>
+                  className="card-title text-lg font-semibold">{result.title
+                    .replace('yEnc', '')
+                    .replace('NZB', '')
+                    .replace('⬇', '')
+                    .replace('NFO', '\n')}</Link>
                 <p><span className='font-semibold'>Group Name : </span>{result.grp}</p>
                 <p><span className='font-semibold'>Poster : </span>{result.poster}</p>
                 <p><span className='font-semibold'>NZBId : </span>{result.nzbId}</p>
@@ -113,7 +113,7 @@ function SearchResults() {
                   className="btn btn-primary rounded-full hover:shadow-md transition-all duration-300"
                   onClick={() => handleDownload(result.nzbId)}
                 >
-                  <FaDownload size={18}/> Download
+                  <FaDownload size={18} /> Download
                 </button>
               </div>
             </motion.div>

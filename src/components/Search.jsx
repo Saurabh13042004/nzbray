@@ -23,7 +23,7 @@ const Search = () => {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/groups');
+        const response = await axios.get('https://nzbray-data.onrender.com/groups');
         setGroups(response.data);
       } catch (error) {
         console.error('Error fetching groups:', error);
@@ -48,7 +48,7 @@ const Search = () => {
     setLoading(true);
 
     try {
-      const response = await axios.get(`http://localhost:3001/search?q=${searchTerm}&ft=${filetypes}&gr=${group}&po=${poster}&so=${sortOrder}`);
+      const response = await axios.get(`https://nzbray-data.onrender.com/search?q=${searchTerm}&ft=${filetypes}&gr=${group}&po=${poster}&so=${sortOrder}`);
 
       // Navigate to the search results page with the query parameter
       navigate(`/search?q=${searchTerm}&ft=${filetypes}&gr=${group}&po=${poster}&so=${sortOrder}`);
@@ -118,41 +118,41 @@ const Search = () => {
                   Filetypes:
                 </label>
                 <div className="flex items-center">
-        <select
-          id="filetypes"
-          name="filetypes"
-          className="input w-full max-w-xs"
-          value={filetypes}
-          onChange={(e) => setFiletypes(e.target.value)}
-        >
-          <option value="">All</option>
-          <option value="au">Audio</option>
-          <option value="vi">Video</option>
-          <option value="im">Image</option>
-          <option value="ap">App</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
+                  <select
+                    id="filetypes"
+                    name="filetypes"
+                    className="input w-full max-w-xs"
+                    value={filetypes}
+                    onChange={(e) => setFiletypes(e.target.value)}
+                  >
+                    <option value="">All</option>
+                    <option value="au">Audio</option>
+                    <option value="vi">Video</option>
+                    <option value="im">Image</option>
+                    <option value="ap">App</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
               </div>
-<div className="flex items-center mb-4">
-            <label htmlFor="group" className="block text-gray-700 text-sm font-bold mb-2 mr-2">
-              Group:
-            </label>
-            <select
-              id="group"
-              name="group"
-              className="input w-full max-w-xs"
-              value={group}
-              onChange={(e) => setGroup(e.target.value)}
-            >
-              <option value="">All</option>
-              {groups.map((group) => (
-                <option key={group.name} value={group.name}>
-                  {group.name}
-                </option>
-              ))}
-            </select>
-          </div>
+              <div className="flex items-center mb-4">
+                <label htmlFor="group" className="block text-gray-700 text-sm font-bold mb-2 mr-2">
+                  Group:
+                </label>
+                <select
+                  id="group"
+                  name="group"
+                  className="input w-full max-w-xs"
+                  value={group}
+                  onChange={(e) => setGroup(e.target.value)}
+                >
+                  <option value="">All</option>
+                  {groups.map((group) => (
+                    <option key={group.name} value={group.name}>
+                      {group.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               <div className="flex items-center mb-4">
                 <label htmlFor="poster" className="block text-gray-700 text-sm font-bold mb-2 mr-2">

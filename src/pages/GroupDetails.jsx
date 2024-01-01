@@ -16,18 +16,18 @@ const convertBytesToSize = (bytes) => {
   return Math.round(100 * (bytes / Math.pow(1024, i))) / 100 + ' ' + sizes[i];
 };
 const handleDownload = (nzbId) => {
-    try {
-      const link = document.createElement('a');
-      link.href = `http://localhost:3001/nzb/${nzbId}`;
-      link.download = `${nzbId}.nzb`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error('Error during download:', error);
-      toast.error('Error during download. Please try again.');
-    }
-  };
+  try {
+    const link = document.createElement('a');
+    link.href = `https://nzbray-data.onrender.com/nzb/${nzbId}`;
+    link.download = `${nzbId}.nzb`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error('Error during download:', error);
+    toast.error('Error during download. Please try again.');
+  }
+};
 
 const GroupDetails = () => {
   const params = useParams();
@@ -37,7 +37,7 @@ const GroupDetails = () => {
   useEffect(() => {
     const fetchGroupDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/group/${groupName}`);
+        const response = await axios.get(`https://nzbray-data.onrender.com/group/${groupName}`);
         setGroupDetails(response.data);
       } catch (error) {
         console.error('Error fetching group details:', error);
@@ -75,12 +75,12 @@ const GroupDetails = () => {
               <p><span className='font-semibold'>Age: </span>{detail.age}</p>
             </div>
             <div className="absolute bottom-4 right-4 grid gap-3 space-y-2">
-              <button  className="btn btn-primary rounded-full hover:shadow-md transition-all duration-300"  onClick={() => handleDownload(detail.nzbId)}>
-                <FaDownload size={18}/> Download
+              <button className="btn btn-primary rounded-full hover:shadow-md transition-all duration-300" onClick={() => handleDownload(detail.nzbId)}>
+                <FaDownload size={18} /> Download
               </button>
               <Link to={`/post-details/${detail.nzbId}
 `} className="btn btn-primary rounded-full hover:shadow-md transition-all duration-300">
-                <FaInfoCircle size={18}/> Details
+                <FaInfoCircle size={18} /> Details
               </Link>
             </div>
           </motion.div>

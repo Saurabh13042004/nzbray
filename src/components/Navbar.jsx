@@ -36,7 +36,7 @@ function Navbar() {
       <div className="navbar-start">
         <div className="btn btn-ghost font-bold text-2xl flex items-center">
           <SiAbstract className="mr-2" />
-          NZBRay
+          Index...arrr
         </div>
       </div>
       {user && (

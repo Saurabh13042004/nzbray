@@ -31,7 +31,7 @@ const Disclaimer = () => {
       </p>
       <div className="flex items-center mt-6 text-red-500">
         <FiAlertCircle className="mr-2" />
-        <span>If you believe your Intellectual Property is infringed, contact us at <FiMail className="inline" /> legal@nzbray.com</span>
+        <span>If you believe your Intellectual Property is infringed, contact us at <FiMail className="inline" /> legal@Index...arrr.com</span>
       </div>
     </div>
   );
