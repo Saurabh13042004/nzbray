@@ -15,6 +15,7 @@ import PostDetails from './pages/PostDetails'
 import GroupDetails from './pages/GroupDetails'
 import Entry from './pages/Entry'
 import Location from './components/Location'
+import SecuredEntry from './pages/SecuredEntry'
 function App() {
 
   return (
@@ -24,8 +25,9 @@ function App() {
 
      <Routes>
 
-      <Route path='/' element={<SignUp/>}/>
-      <Route path='/trail' element={<Entry/>}/>
+      <Route path='/' element={<SecuredEntry/>}/>
+
+      <Route path='/maintenance' element={<Entry/>}/>
       <Route path='/groups' element={<Groups/>}/>
         <Route path='/about' element={<About/>}/>
         <Route path='/disclaimer' element={<Disclaimer/>}/>

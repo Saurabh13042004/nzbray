@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   daisyui: {
-    themes: [ "garden" , "dark"],
+    themes: [ "dark" , "garden"],
   },
   content: [
     'node_modules/preline/dist/*.js',

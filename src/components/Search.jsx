@@ -6,12 +6,14 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { motion } from 'framer-motion';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase'; // Replace with your actual Firebase configuration import
 
 const Search = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
-  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(true);
   const [filetypes, setFiletypes] = useState('');
   const [group, setGroup] = useState('');
   const [poster, setPoster] = useState('');
@@ -19,8 +21,32 @@ const Search = () => {
 
   const navigate = useNavigate();
   const [groups, setGroups] = useState([]);
+  
+  const checkConstructionPage = async () => {
+    try {
+      const constructionCollection = collection(db, 'constructionPage');
+      const constructionSnapshot = await getDocs(constructionCollection);
+      const constructionList = constructionSnapshot.docs.map((doc) => {
+        const constructionData = doc.data();
+        return {
+          enabled: constructionData.enabled,
+        };
+      });
+      const enab = constructionList[0].enabled;
+      
+      if (enab) {
+        navigate('/maintenance');
+      }
+      
+      
+     
+    } catch (error) {
+      console.error('Error fetching construction page:', error);
+    }
+  };
 
   useEffect(() => {
+    checkConstructionPage();
     const fetchGroups = async () => {
       try {
         const response = await axios.get('https://nzbray-data.onrender.com/groups');
@@ -34,14 +60,6 @@ const Search = () => {
     fetchGroups();
   }, []);
 
-  useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   const handleSearch = async (event) => {
     event.preventDefault();
@@ -66,11 +84,7 @@ const Search = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen ">
-      {!user ? (
-        <div className="flex items-center justify-center h-full">
-          <span className="loading loading-spinner loading-lg"></span>
-        </div>
-      ) : (
+      
         <div className="w-full max-w-md text-center">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -84,7 +98,7 @@ const Search = () => {
           <form onSubmit={handleSearch} className="w-full">
             <div className="flex items-center rounded-full border-2 border-teal-500 overflow-hidden mb-4">
               <input
-                className="appearance-none bg-transparent border-none w-full text-gray-700 px-6 py-3 leading-tight focus:outline-none"
+                className="appearance-none bg-transparent border-none w-full  px-6 py-3 leading-tight focus:outline-none"
                 type="text"
                 placeholder="Enter your search term..."
                 aria-label="Search"
@@ -104,17 +118,12 @@ const Search = () => {
             </div>
           </form>
 
-          <button
-            onClick={handleAdvancedSearchClick}
-            className="bg-teal-500 text-white py-2 px-4 rounded-full mb-4 hover:bg-teal-700"
-          >
-            {showAdvancedSearch ? 'Hide Advanced Search' : 'Show Advanced Search'}
-          </button>
+         
 
           {showAdvancedSearch && (
-            <form className="w-[700px] mb-4">
-              <div className="flex flex-wrap items-center mb-4">
-                <label htmlFor="filetypes" className="block text-gray-700 text-sm font-bold mb-2 mr-2">
+            <form className="w-[900px] my-4 p-5">
+              <div className="flex flex-wrap gap-5 items-center mt-4">
+                <label htmlFor="filetypes" className="block  text-sm font-bold mb-2 mr-2">
                   Filetypes:
                 </label>
                 <div className="flex items-center">
@@ -135,7 +144,7 @@ const Search = () => {
                 </div>
               </div>
               <div className="flex items-center mb-4">
-                <label htmlFor="group" className="block text-gray-700 text-sm font-bold mb-2 mr-2">
+                <label htmlFor="group" className="block  text-sm font-bold mb-2 mr-2">
                   Group:
                 </label>
                 <select
@@ -155,7 +164,7 @@ const Search = () => {
               </div>
 
               <div className="flex items-center mb-4">
-                <label htmlFor="poster" className="block text-gray-700 text-sm font-bold mb-2 mr-2">
+                <label htmlFor="poster" className="block  text-sm font-bold mb-2 mr-2">
                   Poster:
                 </label>
                 <input
@@ -169,7 +178,7 @@ const Search = () => {
               </div>
 
               <div className="flex items-center mb-4">
-                <label htmlFor="sortOrder" className="block text-gray-700 text-sm font-bold mb-2 mr-2">
+                <label htmlFor="sortOrder" className="block  text-sm font-bold mb-2 mr-2">
                   Sort Order:
                 </label>
                 <select
@@ -195,7 +204,7 @@ const Search = () => {
             </div>
           )}
         </div>
-      )}
+      
     </div>
   );
 };
