@@ -158,29 +158,7 @@ const AdminPanel = () => {
     setActiveNavItem(itemId);
   };
 
-  const fetchUsers = async () => {
-    try {
-      const usersCollection = collection(db, 'users');
-      const usersSnapshot = await getDocs(usersCollection);
-  
-      const userList = usersSnapshot.docs.map((doc) => {
-        const userData = doc.data();
-        const signedInDate = userData.signedIn ? userData.signedIn.toDate().toLocaleString() : 'N/A';
-  
-        return {
-          email: userData.email,
-          signedIn: signedInDate,
-          userId: userData.userId,
-          accessCode : userData.accessCode,
-          timestamp: userData.timestamp ? userData.timestamp.toDate().toLocaleString() : 'N/A',
-        };
-      });
-  
-      setUsers(userList);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-    }
-  };
+ 
   
   const generateAccessCode = async () => {
     setLoading(true);
@@ -267,10 +245,7 @@ const AdminPanel = () => {
                   Welcome to the Admin Panel!
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="card  bg-base-100 shadow-xl p-6 rounded-md">
-                    <h3 className="text-xl font-bold mb-2">Total Users</h3>
-                    <p className="text-4xl font-bold">{totalUsers}</p>
-                  </div>
+                  
                   <div className="card  bg-base-100 shadow-xl p-6 rounded-md">
                     <h3 className="text-xl font-bold mb-2">Total Users Invited</h3>
                     <p className="text-4xl font-bold">{totalCodes}</p>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
-import { doc, getDoc, collection, addDoc, getDocs} from 'firebase/firestore';
+import { doc, getDoc, collection, addDoc, getDocs, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase'; // Replace with your actual Firebase configuration import\
 import { toast, ToastContainer } from 'react-toastify';
 import { FaExclamationTriangle, FaTools } from 'react-icons/fa';
@@ -25,13 +25,13 @@ function SecuredEntry() {
         };
       });
       const enab = constructionList[0].enabled;
-      
+
       if (enab) {
         navigate('/maintenance');
       }
-      
-      
-     
+
+
+
     } catch (error) {
       console.error('Error fetching construction page:', error);
     }
@@ -39,15 +39,15 @@ function SecuredEntry() {
   useEffect(() => {
 
     checkConstructionPage();
-       
+
 
     // Check if the access code is stored in the browser's cookie
     const storedAccessCode = Cookies.get('user');
-    if(construction){
+    if (construction) {
       navigate('/maintenance');
     }
-    else{
-      if(storedAccessCode){
+    else {
+      if (storedAccessCode) {
         navigate('/home');
       }
     }
@@ -61,48 +61,60 @@ function SecuredEntry() {
     try {
       const accessCodesCollection = collection(db, 'accessCodes');
       const accessSnapshot = await getDocs(accessCodesCollection);
-      const accessCodesList = accessSnapshot.docs.map((doc) => {
+      const accessCodeData = accessSnapshot.docs.find((doc) => {
         const accessCodeData = doc.data();
-        return {
-          accessCode: accessCodeData.code,
-        };
+        return accessCodeData.code === id;
       });
-      const accessCodes = accessCodesList.map((accessCode) => accessCode.accessCode);
-
-      return accessCodes.includes(id);
+  
+      return accessCodeData ? { docId: accessCodeData.id, data: accessCodeData.data() } : null;
     } catch (error) {
       console.error('Error checking access code validity:', error);
       toast.error('Error checking access code validity:', error);
-      return false;
+      return null;
     }
   };
-
+  
   const handleAccessCodeSubmit = async () => {
     setLoading(true);
-    const accessCodeValid = await checkAccessCodeValidity(accessCode);
+    const accessCodeData = await checkAccessCodeValidity(accessCode);
     setLoading(false);
-    if (accessCodeValid ) {
+  
+    if (accessCodeData) {
       // Set cookie to remember user
       Cookies.set('user', accessCode);
       // Redirect user to home page
-      if(construction){
+      if (construction) {
         navigate('/');
-      }
-      else{
+      } else {
         navigate('/home');
       }
- 
+  
       toast.success('Login Successful');
+  
+      // Log the timesUsed for the matched document
+      console.log('Document ID:', accessCodeData.docId);
+      console.log('Timestamp:', new Date().toISOString());
+      console.log('timesUsed:', accessCodeData.data.timesUsed);
+
+      // Update the timesUsed field for the matched document
+      const accessCodeDocRef = doc(db, 'accessCodes', accessCodeData.docId);
+      await updateDoc(accessCodeDocRef, {
+        timesUsed: accessCodeData.data.timesUsed + 1,
+        
+      });
+
+      
+
     } else {
       toast.error('Invalid access code. Please try again.');
     }
   };
-
+  
 
 
   return (
     <div>
-     
+
       <div className="absolute inset-0 overflow-hidden">
         <img
           className="w-[70%] h-[70%] object-cover mx-auto"
@@ -136,8 +148,8 @@ function SecuredEntry() {
       </dialog>
       <ToastContainer />
     </div>
-   
-  
+
+
   );
 }
 
