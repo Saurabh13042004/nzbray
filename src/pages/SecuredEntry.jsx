@@ -106,7 +106,7 @@ function SecuredEntry() {
       <div className="absolute inset-0 overflow-hidden">
         <img
           className="w-[70%] h-[70%] object-cover mx-auto"
-          src="./src/assets/adad.gif"
+          src="https://raw.githubusercontent.com/Saurabh13042004/usenet/main/frontend/src/assets/adad.gif?token=GHSAT0AAAAAACMKHO4PZLUCXBUJXVYMYBKUZMWI6HQ"
           onClick={() => document.getElementById('modal').showModal()}
         />
       </div>
