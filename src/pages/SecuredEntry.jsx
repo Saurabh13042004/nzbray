@@ -115,9 +115,9 @@ function SecuredEntry() {
   return (
     <div>
 
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
         <img
-          className="w-[70%] h-[70%] object-cover mx-auto"
+          className="w-[50%] h-[50%] object-cover mx-auto"
           src="https://firebasestorage.googleapis.com/v0/b/usenet-66754.appspot.com/o/adad.gif?alt=media&token=2a925a5a-66f3-4116-a438-630b323a8e4b"
           onClick={() => document.getElementById('modal').showModal()}
         />

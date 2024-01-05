@@ -29,6 +29,18 @@ const AdminPanel = () => {
   const [password, setPassword] = useState('');
   const [adminId, setAdminId] = useState('');
   const [enabled, setEnabled] = useState(false);
+  const [customCode, setCustomCode] = useState(''); // New state for custom code input
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const generateUniqueCode = () => {
+    if (customCode.length != 0) {
+      return customCode;
+    } else {
+      const randomNum = Math.floor(Math.random() * 1000000000000);
+      return `${randomNum}`; // Use a random 12-digit number
+    }
+  };
 
   const checkConstructionPage = async () => {
     try {
@@ -101,7 +113,7 @@ const AdminPanel = () => {
     if (admin && admin.password === password) {
       setLoggedIn(true);
       document.getElementById('modal').close();
-      toast.success('Welcome Admin')
+      toast.success('Welcome BabyRay')
     } else {
       alert('Invalid credentials');
 
@@ -148,11 +160,7 @@ const AdminPanel = () => {
   ];
 
   // Function to generate a unique access code
-  const generateUniqueCode = () => {
-    const timestamp = new Date().getTime();
-    const randomNum = Math.floor(Math.random() * 10000);
-    return `${assignedPlatform}-${randomNum}`;
-  };
+  
 
   const handleNavItemClick = (itemId) => {
     setActiveNavItem(itemId);
@@ -183,6 +191,17 @@ const AdminPanel = () => {
     }
   };
 
+  // const generateUniqueCode = () => {
+  //   if (customCode.length === 12) {
+  //     return customCode;
+  //   } else {
+  //     const timestamp = new Date().getTime();
+  //     const randomNum = Math.floor(Math.random() * 1000000000000);
+  //     return `${assignedPlatform}-${randomNum}`;
+  //   }
+  // };
+
+
   const fetchGeneratedCodes = async () => {
     try {
       const codesCollection = collection(db, 'accessCodes');
@@ -202,7 +221,28 @@ const AdminPanel = () => {
       console.error('Error fetching access codes:', error);
     }
   };
+  const updateAdminPassword = async () => {
+    try {
+      if (newPassword !== confirmPassword) {
+        toast.error("Passwords don't match");
+        return;
+      }
 
+      // Update the admin password in the 'admins' collection
+      const adminCollection = collection(db, 'admins');
+      const adminDoc = await getDocs(adminCollection);
+      const adminRef = adminDoc.docs[0].ref;
+
+      await updateDoc(adminRef, { password: newPassword });
+
+      toast.success('Password updated successfully');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (error) {
+      console.error('Error updating admin password:', error);
+      toast.error('Error updating password. Please try again.');
+    }
+  };
   useEffect(() => {
     if (activeNavItem === 'users') {
       fetchUsers();
@@ -237,35 +277,71 @@ const AdminPanel = () => {
             </div>
           </header>
           <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 dark:bg-slate-800 p-4 transition-all duration-500">
-            {activeNavItem === 'dashboard' && (
-              <div>
-                {/* Dashboard content here */}
-                <h2 className="text-2xl font-bold mb-4 text-white">
-  
-                  Welcome to the Admin Panel!
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  
-                  <div className="card  bg-base-100 shadow-xl p-6 rounded-md">
-                    <h3 className="text-xl font-bold mb-2">Total Users Invited</h3>
-                    <p className="text-4xl font-bold">{totalCodes}</p>
-                  </div>
-                  <div className="card  bg-base-100 shadow-xl p-6 rounded-md">
-                    <h3 className="text-xl font-bold mb-2">Construction Page</h3>
-                    <p className="text-4xl font-bold">
-                      <input
-                       type="checkbox" 
-                       className="toggle toggle-md"
-                        checked={enabled}
-                        onClick={toggleConstructionPage}
-
-                       
-                       /></p>
-                  </div>
+          {activeNavItem === 'dashboard' && (
+            <div>
+              <h2 className="text-2xl font-bold mb-4 text-white">
+                Welcome to the BabyRay!
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="card bg-base-100 shadow-xl p-6 rounded-md">
+                  <h3 className="text-xl font-bold mb-2">Total Users Invited</h3>
+                  <p className="text-4xl font-bold">{totalCodes}</p>
                 </div>
-
+                <div className="card bg-base-100 shadow-xl p-6 rounded-md">
+                  <h3 className="text-xl font-bold mb-2">Construction Page</h3>
+                  <p className="text-4xl font-bold">
+                    <input
+                      type="checkbox"
+                      className="toggle toggle-md"
+                      checked={enabled}
+                      onClick={toggleConstructionPage}
+                    />
+                  </p>
+                </div>
               </div>
-            )}
+              <div className="card w-96 bg-base-100 shadow-xl mt-4">
+                <div className="card-body">
+                  <h2 className="card-title text-xl font-bold mb-4">Update Admin Password</h2>
+                  <form>
+                    <div className="mb-4">
+                      <label htmlFor="newPassword" className="block text-sm font-medium label">
+                        New Password
+                      </label>
+                      <input
+                        type="password"
+                        id="newPassword"
+                        name="newPassword"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className="input input-bordered input-primary mt-1 p-2 w-full border rounded-md"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label htmlFor="confirmPassword" className="block text-sm font-medium label">
+                        Confirm Password
+                      </label>
+                      <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="input input-bordered input-primary mt-1 p-2 w-full border rounded-md"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={updateAdminPassword}
+                      disabled={loading}
+                      className="btn btn-primary"
+                    >
+                      Update Password
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          )}
   
   {/* {activeNavItem === 'users' && (
     <div className="card  bg-base-100 shadow-xl p-6 rounded-md">
@@ -300,28 +376,42 @@ const AdminPanel = () => {
             {activeNavItem === 'settings' && (
               <div className="card bg-base-100 shadow-xl p-6 rounded-md">
                 <div className="card-body">
-                  <h2 className="card-title text-xl font-bold mb-4">Access Code Generation</h2>
-                  {/* New: Platform Name Input */}
-                  <div className="mb-4">
-                    <label htmlFor="platformName" className="block text-sm font-medium label">
-                      Platform Name
-                    </label>
-                    <input
-                      type="text"
-                      id="platformName"
-                      name="platformName"
-                      value={assignedPlatform}
-                      onChange={(e) => setAssignedPlatform(e.target.value)}
-                      className="input input-bordered input-primary mt-1 p-2 w-full border rounded-md"
-                    />
-                  </div>
-                  <button
-                    onClick={generateAccessCode}
-                    disabled={loading}
-                    className="bg-blue-500 text-white py-2 px-4 rounded-md"
-                  >
-                    Generate Access Code
-                  </button>
+               <h2 className="card-title text-xl font-bold mb-4">Access Code Generation</h2>
+            {/* Platform Name Input */}
+            <div className="mb-4">
+              <label htmlFor="platformName" className="block text-sm font-medium label">
+                Platform Name (for reference)
+              </label>
+              <input
+                type="text"
+                id="platformName"
+                name="platformName"
+                value={assignedPlatform}
+                onChange={(e) => setAssignedPlatform(e.target.value)}
+                className="input input-bordered input-primary mt-1 p-2 w-full border rounded-md"
+              />
+            </div>
+            {/* Custom Code Input */}
+            <div className="mb-4">
+              <label htmlFor="customCode" className="block text-sm font-medium label">
+                Custom Code (12 numbers)
+              </label>
+              <input
+                type="text"
+                id="customCode"
+                name="customCode"
+                value={customCode}
+                onChange={(e) => setCustomCode(e.target.value)}
+                className="input input-bordered input-primary mt-1 p-2 w-full border rounded-md"
+              />
+            </div>
+            <button
+              onClick={generateAccessCode}
+              disabled={loading}
+              className="bg-blue-500 text-white py-2 px-4 rounded-md"
+            >
+              Generate Access Code
+            </button>
                   <div className="mt-4">
                     <h3 className="text-lg font-bold mb-2">Generated Access Codes</h3>
                     <div className="overflow-x-auto">

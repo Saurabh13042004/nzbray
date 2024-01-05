@@ -13,7 +13,7 @@ const Search = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
-  const [showAdvancedSearch, setShowAdvancedSearch] = useState(true);
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [filetypes, setFiletypes] = useState('');
   const [group, setGroup] = useState('');
   const [poster, setPoster] = useState('');
@@ -96,7 +96,7 @@ const Search = () => {
           </motion.div>
 
           <form onSubmit={handleSearch} className="w-full">
-            <div className="flex items-center rounded-full border-2 border-teal-500 overflow-hidden mb-4">
+            <div className="flex items-center rounded-full border-2 border-primary overflow-hidden mb-4">
               <input
                 className="appearance-none bg-transparent border-none w-full  px-6 py-3 leading-tight focus:outline-none"
                 type="text"
@@ -106,7 +106,7 @@ const Search = () => {
                 onChange={(event) => setSearchTerm(event.target.value)}
               />
               <button
-                className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 text-sm text-white px-6 py-3"
+                className="flex-shrink-0 bg-primary hover:bg-neutral text-sm text-white px-6 py-3"
                 type="submit"
               >
                 {loading ? (
@@ -117,6 +117,17 @@ const Search = () => {
               </button>
             </div>
           </form>
+
+          <div className="flex items-center justify-center mt-9">
+            <button
+
+              className="btn btn-wide btn-primary"
+              onClick={handleAdvancedSearchClick}
+            >
+              {showAdvancedSearch ? 'Hide' : 'Show'} Advanced Search
+            </button>
+          </div>
+
 
          
 

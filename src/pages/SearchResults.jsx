@@ -216,7 +216,7 @@ function SearchResults() {
             
             disabled={loading}
           >
-            Upload
+            Push to SABnzbd
           </button>
           </div>
         </div>
