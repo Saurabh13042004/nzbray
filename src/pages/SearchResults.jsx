@@ -138,6 +138,9 @@ function SearchResults() {
                     .replace('NFO', '\n')}</Link>
                 <p><span className='font-semibold'>Group Name : </span>{result.grp}</p>
                 <p><span className='font-semibold'>Poster : </span>{result.poster}</p>
+                <p>
+                  <span className='font-semibold'>Age : </span>{result.age}
+                </p>
                 <p><span className='font-semibold'>NZBId : </span>{result.nzbId}</p>
               </div>
 

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { IoMdDownload } from 'react-icons/io';
 
 const convertBytesToSize = (bytes) => {
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
@@ -11,6 +12,22 @@ const convertBytesToSize = (bytes) => {
   const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
 
   return Math.round(100 * (bytes / Math.pow(1024, i))) / 100 + ' ' + sizes[i];
+};
+
+const nzbId = window.location.pathname.split('/')[2];
+
+const handleDownload = () => {
+  try {
+    const link = document.createElement('a');
+    link.href = `https://nzbray-data.onrender.com/nzb/${nzbId}`;
+    link.download = `${nzbId}.nzb`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error('Error during download:', error);
+    toast.error('Error during download. Please try again.');
+  }
 };
 
 const PostDetails = () => {
@@ -47,7 +64,12 @@ const PostDetails = () => {
           <div className='grid grid-cols-2 gap-4'>
             {postDetails.value.map((detail, index) => (
               <div key={index} className='mb-4'>
-                <span className='font-bold'>{detail.label}:</span> {detail.content}
+                <span className='font-bold'>
+                {detail.label === 'Get NZB:'
+                    ? <button className='btn btn-primary' onClick={handleDownload} > <IoMdDownload /> Download</button>
+                    : detail.label
+                  }
+                  </span> {detail.content.replace('NZB⬇', '')}
               </div>
             ))}
           </div>
