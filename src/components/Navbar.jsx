@@ -7,7 +7,9 @@ import { FaSignOutAlt } from 'react-icons/fa';
 function Navbar() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const auth = getAuth();
+  const uid = auth.currentUser ? auth.currentUser.uid : null;
 
 
 
@@ -71,6 +73,15 @@ function Navbar() {
     </ul>
   </div>
   <div className="navbar-end">
+    {
+      uid ? (
+        <Link className='btn btn-base-200 mx-2 ' to='/profile'> Profile </Link>
+
+      ) : (
+        <Link className='btn btn-base-200 mx-2 ' to='/register'> Register </Link>
+      )
+    }
+    
   <div className="dropdown">
   <div tabIndex={0} role="button" className="btn m-1">
     Theme

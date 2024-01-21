@@ -16,6 +16,7 @@ import GroupDetails from './pages/GroupDetails'
 import Entry from './pages/Entry'
 import Location from './components/Location'
 import SecuredEntry from './pages/SecuredEntry'
+import Profile from './pages/Profile'
 function App() {
 
   return (
@@ -38,6 +39,8 @@ function App() {
         <Route path='/admin' element={<Admin/>}/>
         <Route path='/post-details/:postId' element={<PostDetails/>}/>
         <Route path='/group/:groupName' element={<GroupDetails/>}/>
+        <Route path='/register' element={<SignUp/>}/>
+        <Route path='/profile' element={<Profile/>}/>
      </Routes>
     </Router>
     </div>

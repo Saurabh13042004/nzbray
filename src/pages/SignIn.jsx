@@ -12,6 +12,9 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 function SignIn() {
   const [accessCode, setAccessCode] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -19,46 +22,21 @@ function SignIn() {
     setLoading(true);
 
     try {
-      // Validate the access code
-      const isValidAccessCode = await validateAccessCode();
-
-      if (isValidAccessCode) {
-        // Get email from cookies
-        const email = Cookies.get('email');
-        const authInstance = getAuth();
-
-        // Sign in with email and access code as password
-        await signInWithEmailAndPassword(authInstance, email, accessCode);
-
-        setLoading(false);
-        toast.success('Welcome back to IndexArr!');
-        navigate('/home');
-      } else {
-        setLoading(false);
-        toast.error('Invalid access code or email');
-      }
+      const auth = getAuth();
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const uid = user.uid;
+        // Redirect the user to the home page
+      navigate('/home');
+      
     } catch (error) {
-      const errorMessage = error.message;
-      console.error(errorMessage);
+      console.error('Error signing in:', error);
+      toast.error('Error signing in:', error);
+    } finally {
       setLoading(false);
-      toast.error(errorMessage);
     }
   };
 
-  const validateAccessCode = async () => {
-    try {
-      // Query the 'users' collection for the provided access code and email
-      const usersCollection = collection(db, 'users');
-      const q = query(usersCollection, where('accessCode', '==', accessCode));
-
-      const querySnapshot = await getDocs(q);
-
-      // Check if the user with the provided access code exists and is associated with the email
-      return !querySnapshot.empty;
-    } catch (error) {
-      throw new Error('Error validating access code');
-    }
-  };
 
   return (
     <div className="flex min-h-screen items-center justify-center">
@@ -72,18 +50,36 @@ function SignIn() {
         {/* Sign-in form */}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="access-code" className="sr-only">
-              Access Code
+            <label htmlFor="email" className="sr-only">
+              Email
             </label>
             <input
-              id="access-code"
-              name="accessCode"
-              type="text"
-              onChange={(e) => setAccessCode(e.target.value)}
+              id="email"
+              name="email"
+              type="email"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
               autoComplete="off"
               required
               className="appearance-none rounded-md relative block w-full px-3 py-2 border border-base-300 placeholder-base-500 text-base-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="Access Code"
+              placeholder="Email address"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password" className="sr-only">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              autoComplete="off"
+              required
+              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-base-300 placeholder-base-500 text-base-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              placeholder="Password"
             />
           </div>
 
