@@ -7,6 +7,10 @@ import { FaDownload, FaHome, FaUpload } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { getAuth } from 'firebase/auth';
+import { collection, getDocs, updateDoc, doc, query as calculate , where } from 'firebase/firestore';
+
+import { db } from '../firebase';
 
 function SearchResults() {
   const location = useLocation();
@@ -21,9 +25,7 @@ function SearchResults() {
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [host, setHost] = useState('');
-  const [port, setPort] = useState('');
-  const [apiKey, setApiKey] = useState('');
+
   
 
   useEffect(() => {
@@ -60,22 +62,49 @@ function SearchResults() {
   };
 
   const handleUpload = async () => {
-    //http://host:port/sabnzbd/api?output=json&apikey=APIKEY
-    //api?mode=addurl&name=
-    const link = `https://nzbray-data.onrender.com/nzb/${nzbId}`;
-    console.log(link)
-    try {
-      const response = await axios.get(`http://${host}:${port}/sabnzbd/api?output=json&apikey=${apiKey}&mode=addurl&name=https://nzbray-data.onrender.com/nzb/${nzbId}`);
 
-      console.log(response);
-      toast.success('NZB added to SABnzbd queue successfully.');
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    if(currentUser){
+
+      const link = `https://nzbray-data.onrender.com/nzb/${nzbId}`;
+
+      const userId = auth.currentUser.uid;
+      const q = calculate(collection(db, 'users'), where('uid', '==', userId));
+
+      const userSnapshot = await getDocs(q);
+
+      const userData = userSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        host: doc.data().host,
+        port: doc.data().port,
+        apikey: doc.data().apikey,
+      }));
+
+     const host = userData[0].host;
+      const port = userData[0].port;
+      const apiKey = userData[0].apikey;
+      
+
+      console.log(host," ",port," ",apiKey);
+
+      try {
+        const response = await axios.get(`http://${host}:${port}/sabnzbd/api?output=json&apikey=${apiKey}&mode=addurl&name=https://nzbray-data.onrender.com/nzb/${nzbId}`);
+  
+        console.log(response);
+        toast.success('NZB added to SABnzbd queue successfully.');
+      }
+      catch (error) {
+        console.error('Error during upload:', error);
+        toast.error('Error during upload. Please try again.');
+      }
+
+
+
     }
-    catch (error) {
-      console.error('Error during upload:', error);
-      toast.error('Error during upload. Please try again.');
-    }
-    finally {
-      closeModal();
+    else{
+      toast.error("Please Register to use this feature");
+      return;
     }
 
   };
@@ -156,20 +185,20 @@ function SearchResults() {
                 <button
                   className="btn btn-primary rounded-full hover:shadow-md mx-2 transition-all duration-300"
                   onClick={() => {
-                    modalOpen();
+                    handleUpload();
                     setNzbId(result.nzbId);
                 }}
 
                   
                 >
-                  <FaUpload size={18} /> SABnzbd
+                  <FaUpload size={18} /> Push to SABnzbd
                 </button>
               </div>
             </motion.div>
           ))}
         </div>
       )}
-
+{/* 
 <dialog id="modal" className="modal">
         <div className="modal-box p-6 flex flex-col ">
           <form method="dialog" className="mb-4">
@@ -223,7 +252,7 @@ function SearchResults() {
           </button>
           </div>
         </div>
-      </dialog>
+      </dialog> */}
 
       {searchResults.length > 0 && (
         <div className="flex justify-between mt-4">
