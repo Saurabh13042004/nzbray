@@ -108,7 +108,7 @@ const AdminPanel = () => {
         password: adminData.password,
       };
     });
-    console.log(adminList);
+    // console.log(adminList);
     const admin = adminList.find((admin) => admin.userName === adminId);
     if (admin && admin.password === password) {
       setLoggedIn(true);
@@ -156,6 +156,7 @@ const AdminPanel = () => {
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: 'home' },
+    { id: 'users', label: 'Users', icon: 'users' },
     { id: 'settings', label: 'Settings', icon: 'cog' },
   ];
 
@@ -251,6 +252,51 @@ const AdminPanel = () => {
     }
   }, [activeNavItem]);
 
+  
+  const fetchPlatformName = async (inviteCode) => {
+    try {
+      const codesCollection = collection(db, 'accessCodes');
+      const codesSnapshot = await getDocs(codesCollection);
+      const codeList = codesSnapshot.docs.map((doc) => {
+        const codeData = doc.data();
+        return {
+          code: codeData.code,
+          assignedPlatform: codeData.assignedPlatform,
+        };
+      });
+      const code = codeList.find((code) => code.code === inviteCode);
+      return code.assignedPlatform;
+    } catch (error) {
+      console.error('Error fetching access codes:', error);
+    }
+  };
+
+
+  const fetchUsers = async () => {
+    try {
+      const usersCollection = collection(db, 'users');
+      const usersSnapshot = await getDocs(usersCollection);
+      const userList = await Promise.all(
+        usersSnapshot.docs.map(async (doc) => {
+          const userData = doc.data();
+          const assignedPlatform = await fetchPlatformName(userData.inviteCode);
+          return {
+            email: userData.email,
+            createdAt: userData.createdAt ? userData.createdAt.toDate().toLocaleString() : 'N/A',
+            inviteCode: userData.inviteCode,
+            assignedPlatform: assignedPlatform,
+          };
+        })
+      );
+      setUsers(userList);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
+  
+
+
+
   const handleThemeSwitch = () => {
     const newTheme = theme === 'garden' ? 'dark' : 'light';
     switchTheme(newTheme);
@@ -298,6 +344,10 @@ const AdminPanel = () => {
                     />
                   </p>
                 </div>
+                <div className="card bg-base-100 shadow-xl p-6 rounded-md">
+                  <h3 className="text-xl font-bold mb-2">Total Users Registered</h3>
+                  <p className="text-4xl font-bold">{totalUsers}</p>
+                </div>
               </div>
               <div className="card w-96 bg-base-100 shadow-xl mt-4">
                 <div className="card-body">
@@ -343,7 +393,7 @@ const AdminPanel = () => {
             </div>
           )}
   
-  {/* {activeNavItem === 'users' && (
+  {activeNavItem === 'users' && (
     <div className="card  bg-base-100 shadow-xl p-6 rounded-md">
   
       <div className="card-body">
@@ -352,17 +402,20 @@ const AdminPanel = () => {
           <table className="table">
             <thead>
               <tr>
+                <th>Email Id </th>
                 <th>Access Code</th>
                 <th>Timestamp</th>
-                <th>IP Address</th>
+                <th> Platform Name </th>
               </tr>
             </thead>
             <tbody>
               {users.map((user) => (
                 <tr key={user.userId}>
-                  <td>{user.accessCode}</td>
-                  <td>{user.timestamp}</td>
-                  <td>{user.ipAddress}</td>
+                  <td>{user.email}</td>
+                  <td>{user.inviteCode}</td>
+                  <td>{user.createdAt}</td>
+                  <td>{user.assignedPlatform}</td>
+
                 </tr>
               ))}
             </tbody>
@@ -370,7 +423,7 @@ const AdminPanel = () => {
         </div>
       </div>
     </div>
-  )} */}
+  )}
   
   
             {activeNavItem === 'settings' && (

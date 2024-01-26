@@ -58,7 +58,7 @@ function Profile() {
   const handleLogout = () => {
     const auth = getAuth();
     signOut(auth);
-    navigate('/login');
+    navigate('/signin');
     // You may want to redirect to the login page or update your app state accordingly.
   };
 

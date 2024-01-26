@@ -11,6 +11,18 @@ function Navbar() {
   const auth = getAuth();
   const uid = auth.currentUser ? auth.currentUser.uid : null;
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [auth]);
+
+  if (loading) {
+    return <p>Loading...</p>; // You can replace this with a loading indicator or other UI feedback.
+  }
 
 
   return (
@@ -73,14 +85,16 @@ function Navbar() {
     </ul>
   </div>
   <div className="navbar-end">
-    {
-      uid ? (
-        <Link className='btn btn-base-200 mx-2 ' to='/profile'> Profile </Link>
+  {user ? (
+          <Link className="btn btn-base-200 mx-2" to="/profile">
+            Profile
+          </Link>
+        ) : (
+          <Link className="btn btn-base-200 mx-2" to="/register">
+            Register
+          </Link>
+        )}
 
-      ) : (
-        <Link className='btn btn-base-200 mx-2 ' to='/register'> Register </Link>
-      )
-    }
     
   <div className="dropdown">
   <div tabIndex={0} role="button" className="btn m-1">
